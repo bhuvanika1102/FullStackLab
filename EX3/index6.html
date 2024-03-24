@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Drag and Drop List</title>
+    <style>
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            border: 1px solid #ccc;
+            margin: 5px;
+            padding: 10px;
+            cursor: grab;
+
+        }
+    </style>
+</head>
+<body>
+    <h1>Drag and Drop List</h1>
+
+    <ul id="sortableList">
+        <li draggable="true">Item 1</li>
+        <li draggable="true">Item 2</li>
+        <li draggable="true">Item 3</li>
+        <li draggable="true">Item 4</li>
+        <li draggable="true">Item 5</li>
+    </ul>
+
+    <script>
+        const sortableList = document.getElementById('sortableList');
+        let draggedItem = null;
+
+        sortableList.addEventListener('dragstart', function (e) {
+            draggedItem = e.target;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', draggedItem.innerHTML);
+        });
+
+        sortableList.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            const targetItem = e.target;
+
+            // Allow drop only if the target is a list item
+            if (targetItem.tagName === 'LI') {
+                const boundingBox = targetItem.getBoundingClientRect();
+                const mouseY = e.clientY;
+
+                // Determine whether to move the dragged item above or below the target item
+                const moveBefore = mouseY < boundingBox.top + boundingBox.height / 2;
+                sortableList.insertBefore(draggedItem, moveBefore ? targetItem : targetItem.nextSibling);
+            }
+        });
+
+        sortableList.addEventListener('dragend', function () {
+            draggedItem = null;
+        });
+    </script>
+</body>
+</html>

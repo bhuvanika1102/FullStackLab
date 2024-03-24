@@ -1,0 +1,103 @@
+ <!DOCTYPE html>
+<head>
+    <title>Game of 15</title>
+    <style>
+        
+
+        td {
+            border: 1px solid black;
+            width: 75px;
+            height: 75px;
+            text-align: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        td.empty {
+            background-color: #ddd;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize the game
+            initializeGame();
+
+            // Add onclick event to each tile
+            const tiles = document.querySelectorAll("td:not(.empty)");
+            tiles.forEach(tile => {
+                tile.addEventListener("click", function () {
+                    moveTile(tile);
+                });
+            });
+        });
+
+        function initializeGame() {
+            const table = document.getElementById("gameBoard");
+            const numbers = Array.from({ length: 15 }, (_, index) => index + 1);
+
+            // Randomly shuffle the numbers
+            numbers.sort(() => Math.random() - 0.5);
+
+            // Flatten the array (1D array)
+            const flattenedNumbers = [...numbers];
+
+            // Add an empty slot at a random position
+            const emptyIndex = Math.floor(Math.random() * 16);
+            flattenedNumbers.splice(emptyIndex, 0, "");
+
+            // Create the game board
+            for (let i = 0; i < 4; i++) {
+                const row = table.insertRow();
+                for (let j = 0; j < 4; j++) {
+                    const cell = row.insertCell();
+                    const number = flattenedNumbers[i * 4 + j];
+                    cell.textContent = number;
+                    cell.classList.add(number === "" ? "empty" : "tile");
+                }
+            }
+        }
+
+        function moveTile(tile) {
+            const emptyCell = document.querySelector(".empty");
+            if (isAdjacent(tile, emptyCell)) {
+                // Swap tile and empty cell
+                const tempText = tile.textContent;
+                tile.textContent = "";
+                emptyCell.textContent = tempText;
+
+                // Swap classes
+                tile.classList.remove("tile");
+                tile.classList.add("empty");
+                emptyCell.classList.remove("empty");
+                emptyCell.classList.add("tile");
+            }
+
+            // Check if the puzzle is solved
+            if (isPuzzleSolved()) {
+                alert("Congratulations! You solved the puzzle!");
+            }
+        }
+
+        function isAdjacent(tile, emptyCell) {
+            const tileIndex = tile.cellIndex + tile.parentNode.rowIndex * 4;
+            const emptyIndex = emptyCell.cellIndex + emptyCell.parentNode.rowIndex * 4;
+
+            // Check if the tile is adjacent to the empty cell
+            return (
+                (Math.abs(tileIndex - emptyIndex) === 1 && tile.parentNode.rowIndex === emptyCell.parentNode.rowIndex) ||
+                Math.abs(tileIndex - emptyIndex) === 4
+            );
+        }
+
+        function isPuzzleSolved() {
+            const tiles = document.querySelectorAll(".tile");
+            const tileValues = Array.from(tiles).map(tile => parseInt(tile.textContent));
+            return tileValues.every((value, index) => value === index + 1);
+        }
+    </script>
+</head>
+<body>
+    <h1>Game of 15</h1>
+    <table id="gameBoard"></table>
+</body>
+</html>
