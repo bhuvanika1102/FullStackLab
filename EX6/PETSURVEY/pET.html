@@ -1,0 +1,215 @@
+<html>
+<head>
+  <title>Pet Survey</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 
+  <!-- <style>
+/* General styles */
+#surveyForm {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ebece4;
+  border-radius: 5px;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  width: calc(100% - 20px); /* Adjusted width to account for padding */
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #b55757;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type="radio"] {
+  margin-right: 5px;
+}
+
+button {
+  background-color: #3c0d16;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+button:hover {
+  background-color: #1f15ac;
+}
+
+/* Nested div styles */
+#surveyForm > div > div {
+  width: 400px;
+  border: 1px solid black;
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  border: 1px solid #444;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #ddd;
+}
+
+  </style> -->
+</head>
+<body>
+
+<form id="surveyForm">
+  <label for="name">Owner Name</label>
+  <input type="text" id="name" name="Ownername" required>
+  <br/>
+  <br/>
+  <label for="pet">What type of pet do you have?</label>
+  <select id="pet" name="petType" required>
+    <option value="">Select One</option>
+    <option value="dog">Dog</option>
+    <option value="cat">Cat</option>
+    <option value="bird">Bird</option>
+    <option value="hamster">Hamster</option>
+    <option value="other">Other</option>
+  </select>
+  <br/>
+  <br/>
+  <!-- <label for="mode">Mode Of Purchase?</label>
+  Online<input type="radio" value="online" id="mode-on" name="mode">
+  Offline<input type="radio" value="offline" id="mode-off" name="mode"> -->
+
+  <label for="breed">What is your pet breed ?</label>
+  <input type="text" id="breed" name="breed" required>
+  <br/><br/>
+  <label for="age">How old is your pet?</label>
+  <input type="number" id="age" name="age" min="0" required>
+  <br/><br/>
+  <label for="color">What is the color of your pet?</label>
+  <input type="text" id="color" name="color" required>
+  <br/><br/>
+  <label for="adoption">Adoption</label>
+  Yes<input type="radio" value="Yes" id="mode-on" name="adoption">
+  No<input type="radio" value="No" id="mode-off" name="adoption">
+  <br/><br/>
+  <!-- <label for="trained">Is your pet house-trained?</label>
+  Yes<input type="radio" value="yes" id="trained-yes" name="trained">
+  No<input type="radio" value="no" id="trained-no" name="trained"> -->
+
+  <br>
+
+  <button type="submit">Submit</button>
+</form>
+
+<button onclick="getDetails()">GET DATA</button>
+<button onclick="getData()">FILTER</button>
+<div id="content">
+
+</div>
+<script>
+
+  document.getElementById("surveyForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    // Get form data
+    const formData = new FormData(event.target);
+    const surveyData = {};
+    formData.forEach((value, key) => {
+      surveyData[key] = value;
+    });
+    console.log(surveyData);
+    
+    // Send data to server using Axios
+    axios.post('http://localhost:3001/survey', surveyData)
+      .then(response => {
+        alert('Survey submitted successfully!');
+        // Log server response (e.g., overall survey results)
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again later.');
+      });
+  });
+
+  function createTable(data) {
+    const table = document.createElement('table');
+    const headers = ['Owner Name', 'Pet Type', 'Breed', 'Pet Age', 'Pet Color', 'Home Trained','Mode','Adoption'];
+
+    // Create table header
+    const headerRow = document.createElement('tr');
+    headers.forEach(headerText => {
+      const th = document.createElement('th');
+      th.textContent = headerText;
+      headerRow.appendChild(th);
+    });
+    table.appendChild(headerRow);
+
+    // Create table rows with data
+    data.forEach(item => {
+      // Exclude the _id field from being displayed
+      const { _id, ...rowData } = item;
+
+      const tr = document.createElement('tr');
+      Object.values(rowData).forEach(value => {
+        const td = document.createElement('td');
+        td.textContent = value;
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+    });
+
+    return table;
+  }
+  
+  function getData() {
+    axios.get('http://localhost:3001/survey/analyse')
+      .then(res => {
+        const data1 = res.data;
+        console.log(data1);
+        const table1 = createTable(data1);
+        document.body.appendChild(table1); // Append the table directly to the body
+      })
+      .catch(error => {
+        console.error('GET Error:', error.message);
+      });
+  }
+
+  function getDetails() {
+    axios.get('http://localhost:3001/survey/results')
+      .then(response => {
+        const data = response.data;
+        const table = createTable(data);
+        document.body.appendChild(table); // Append the table directly to the body
+      })
+      .catch(error => {
+        console.error('GET Error:', error.message);
+      });
+  }
+
+</script>
+
+</body>
+</html>
