@@ -1,0 +1,11 @@
+const url = require('url');
+const urlString = 'https://www.example.com:8080/path?query=example&param=value#fragment';
+const parsedUrl = url.parse(urlString, true);
+console.log('Original URL:', urlString);
+console.log('Parsed URL Object:', parsedUrl);
+console.log('Protocol:', parsedUrl.protocol);
+console.log('Host:', parsedUrl.host);
+console.log('Port:', parsedUrl.port);
+console.log('Path:', parsedUrl.pathname);
+console.log('Query:', parsedUrl.query);
+console.log('Fragment:', parsedUrl.hash);

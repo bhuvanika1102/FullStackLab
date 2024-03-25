@@ -1,0 +1,44 @@
+1)
+npm init -y
+npm install nodemailer
+
+then run it using:
+
+node sendMail.js   //sendMail.js  -->file name
+
+2)
+npm install axios
+
+This is a JSON object representing a post. In this case, it corresponds to the post with id 1 on the JSONPlaceholder API. The properties include:
+
+userId: The user ID associated with the post.
+id: The unique identifier of the post.
+title: The title of the post.
+body: The content or body of the post.
+The script you ran (httpRequest.js) uses the Axios library to make a GET request to the specified API URL (https://jsonplaceholder.typicode.com/posts/1). The response from the API is then logged to the console
+
+
+3)
+In this example:
+
+The urlString variable contains the URL that you want to parse.
+The url.parse() method is used to parse the URL into a URL object.
+The URL object contains properties like protocol, host, port, pathname, query, and hash.
+The console.log statements display the original URL, the parsed URL object, and individual components of the URL.
+
+
+output explanation
+-----------------
+protocol: The protocol used in the URL (in this case, 'https').
+slashes: A boolean indicating whether the protocol is followed by two slashes (true in this case).
+auth: Authentication information (null in this example).
+host: The full host, including the port (www.example.com:8080).
+port: The port specified in the URL (8080).
+hostname: The host name without the port (www.example.com).
+hash: The fragment identifier part of the URL (#fragment).
+search: The query string, including the leading "?" (?query=example&param=value).
+query: An object containing the parsed query parameters ({ query: 'example', param: 'value' }).
+pathname: The path part of the URL (/path).
+path: The path and query string (/path?query=example&param=value).
+href: The complete URL (https://www.example.com:8080/path?query=example&param=value#fragment).
+The information provided by the url module allows you to easily access and manipulate different components of the URL.
